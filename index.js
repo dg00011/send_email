@@ -2,16 +2,15 @@ const express = require('express')
 const app = express()
 const https = require('https');
 
-app.get("/", (req, res) => {
+app.post("/", (req, res) => {
 
 
-    console.loga('req',req,req.body)
+    console.log('req', req.query.email, req.body)
     // res.send({message:'Hey'})
 
     //if (Object.keys(req.query).length > 0) {
 
-    //const configurationLink = `${req.query.configuration_link}${req.query.threekit_short_id}`;
-
+    const configurationLink = `${req.query.configuration_link}${req.query.threekit_short_id}`;
 
     const data = JSON.stringify({
         From: 'DNA@jlgloveco.com',
@@ -19,15 +18,14 @@ app.get("/", (req, res) => {
         MessageStream: 'jl-gloves',
         TemplateAlias: 'code-your-own-1',
         TemplateModel: {
-            customer_name: 'we are in index',
-            customer_email: "req.query.email",
-            customer_phone: "req.query.phone",
-            configuration_id: "req.query.configuration_id",
-            configuration_link: "configurationLink",
+            customer_name: 'theName',
+            customer_email: req.query.email,
+            customer_phone: req.query.phone,
+            configuration_id: req.query.configuration_id,
+            configuration_link: configurationLink,
             snapshot: req.query.snapshot,
         },
     });
-
 
 
     const options = {
@@ -40,19 +38,15 @@ app.get("/", (req, res) => {
         },
     };
 
-
     const request = https.request(options, (response) => {
-
         let responseBody = '';
         response.on('data', (chunk) => {
             responseBody += chunk;
         });
 
-
         response.on('end', () => {
             console.log(responseBody);
         });
-
     });
 
 
